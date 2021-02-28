@@ -341,6 +341,9 @@ inline typename flist<T>::iterator flist<T>::cend() const
     return iterator(m_tail->m_next);
 }
 
+/**
+ *
+ */
 template<class T>
 void flist<T>::copy_flist(const flist<T>& other)
 {
@@ -353,6 +356,9 @@ void flist<T>::copy_flist(const flist<T>& other)
     }
 }
 
+/**
+ *
+ */
 template<class T>
 typename flist<T>::tnode* flist<T>::prev(tnode* pos)
 {
@@ -369,6 +375,9 @@ typename flist<T>::tnode* flist<T>::prev(tnode* pos)
     return tmp;
 }
 
+/**
+ *
+ */
 template<class T>
 typename flist<T>::tnode* flist<T>::next(tnode* pos)
 {
