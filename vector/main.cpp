@@ -3,7 +3,7 @@
 #include "vector.h"
 
 template<class T>
-void print_list(std::ostream &out, const typename scl::vector<T>& vector)
+void print_arr(std::ostream &out, const typename scl::vector<T>& vector)
 {
     typename scl::vector<T>::iterator it;
     for(it = vector.cbegin(); it!=vector.cend(); it++)
@@ -15,31 +15,37 @@ void print_list(std::ostream &out, const typename scl::vector<T>& vector)
 
 int main()
 {
-/*    scl::flist<int> list;
-    list.add(1);
-    list.add(2);
-    list.add(3);
-    list.add(5);
-    print_list(std::cout, list);
+    scl::vector<int> arr;
+    arr.push_back(1);
+    arr.push_back(2);
+    arr.push_back(3);
+    arr.push_back(3);
+    print_arr(std::cout, arr);
+    std::cout << "Size: " << arr.size() << "\n";
+    std::cout << "Capacity: " << arr.capacity() << "\n";
+
     for(int i=0; i<16; ++i)
     {
-        list.add(3 + static_cast<int>(std::rand()%3));
+        arr.push_back(3 + static_cast<int>(std::rand()%3));
     }
-    list.add(8);
-    print_list(std::cout, list);
+    arr.push_back(8);
+    print_arr(std::cout, arr);
+    std::cout << "Size: " << arr.size() << "\n";
+    std::cout << "Capacity: " << arr.capacity() << "\n";
 
-    scl::flist<int>::iterator iter = list.begin();
-    while( iter != list.end())
+    //
+    scl::vector<int>::iterator iter = arr.begin();
+    while(iter != arr.end())
     {
         if(*iter == 3){
             //
-            iter= list.erase(iter);
-        }
-        else{
+            iter = arr.erase(iter);
+        }else{
             iter++;
         }
     }
-    print_list(std::cout, list);
+    print_arr(std::cout, arr);
+
 /*
     //
     tmp = list.front();
