@@ -109,9 +109,9 @@ public:
 
 private:
     T* m_buffer;
-    std::size_t m_max_size;
-    std::size_t m_begin_prt;
-    std::size_t m_end_prt;
+    std::size_t m_size;
+    std::size_t m_begin;
+    std::size_t m_end;
 };
 
 /**
@@ -153,15 +153,15 @@ bool operator!=(const deque<T>& x, const deque<T> y)
 template<class T>
 deque<T>::deque()
     :m_buffer(nullptr)
-    ,m_max_size(0)
-    ,m_begin_prt(0)
-    ,m_end_prt(0)
+    ,m_size(0)
+    ,m_begin(0)
+    ,m_end(0)
 {
 
     m_buffer = new (std::nothrow) T[buffer_size()];
     if(m_buffer != NULL)
     {
-        m_max_size = buffer_size();
+        m_size = buffer_size();
     }
     else
     {
@@ -176,7 +176,7 @@ template<class T>
 deque<T>::~deque()
 {
     delete [] m_buffer;
-    m_max_size = 0;
+    m_size = 0;
 }
 
 /**
@@ -184,14 +184,14 @@ deque<T>::~deque()
  */
 template<class T>
 deque<T>::deque(const deque<T>& other)
-    :m_max_size(other.m_max_size)
-    ,m_begin_prt(other.m_begin_prt)
-    ,m_end_prt(other.m_end_prt)
+    :m_size(other.m_size)
+    ,m_begin(other.m_begin)
+    ,m_end(other.m_end)
 {
     m_buffer = new (std::nothrow) T[buffer_size()];
     if(m_buffer != NULL)
     {
-        for(std::size_t i=0; i<m_max_size; ++i)
+        for(std::size_t i=0; i<m_size; ++i)
         {
             m_buffer[i] = other.m_buffer[i];
         }
@@ -210,16 +210,16 @@ deque<T>& deque<T>::operator=(const deque<T>& other)
 {
     if(this != other)
     {
-        T* new_buffer = new (std::nothrow) T[other.m_max_size];
+        T* new_buffer = new (std::nothrow) T[other.m_size];
         if(m_buffer != NULL)
         {
             delete [] m_buffer;
             m_buffer = new_buffer;
-            m_max_size = other.m_max_size;
-            m_begin_prt = other.m_begin_prt;
-            m_end_prt = other.m_end_prt;
+            m_size = other.m_size;
+            m_begin = other.m_begin;
+            m_end = other.m_end;
 
-            for(std::size_t i=0; i<m_max_size; ++i)
+            for(std::size_t i=0; i<m_size; ++i)
             {
                 m_buffer[i] = other.m_buffer[i];
             }
@@ -235,7 +235,7 @@ deque<T>& deque<T>::operator=(const deque<T>& other)
 template<class T>
 T& deque<T>::operator[](std::size_t val)
 {
-    //TODO
+
 }
 
 template<class T>
@@ -247,13 +247,13 @@ const T& deque<T>::operator[](std::size_t val) const
 template<class T>
 bool deque<T>::empty() const noexcept
 {
-    //TODO
+    return size() == 0 ? true : false;
 }
 
 template<class T>
 std::size_t deque<T>::size() const noexcept
 {
-    //TODO
+    return (m_end - m_begin + m_size) % m_size;
 }
 
 template<class T>
