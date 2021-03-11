@@ -235,13 +235,15 @@ deque<T>& deque<T>::operator=(const deque<T>& other)
 template<class T>
 T& deque<T>::operator[](std::size_t val)
 {
-
+    assert(val>=size() && "Deque index value is out of range");
+    return *(m_buffer + (m_begin + val) % m_size);
 }
 
 template<class T>
 const T& deque<T>::operator[](std::size_t val) const
 {
-    //TODO
+    assert(val>=size() && "Deque index value is out of range");
+    return *(m_buffer + (m_begin + val) % m_size);
 }
 
 template<class T>
