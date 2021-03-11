@@ -39,21 +39,26 @@ class deque_iterator{
 
     const deque<T>* m_deq_ptr;
     std::size_t m_indx_base;
+    bool get_local(std::size_t val)
+    {
+        if(m_deq_ptr->m_begin <= m_deq_ptr->m_end)
+        {
+            return ((m_deq_ptr->m_begin <= val) && (val <= m_deq_ptr->m_end));
+        }
+        else
+        {
+            return (((m_deq_ptr->m_begin <= val) && (val < m_deq_ptr->m_size)) || val <= m_deq_ptr->m_end);
+        }
+    }
 
 public:
     using value_type = T;
     using iterator = deque_iterator<T>;
 
     deque_iterator();
-    deque_iterator(const deque<T>& d_other);
+    deque_iterator(const deque<T> *d_other, std::size_t index);
     deque_iterator(const iterator& i_other);
     iterator& operator=(const iterator& i_other);
-
-    T& retrive() const;
-    bool valid() const;
-
-    void init(const deque<T>& d_other);
-    void rinit(const deque<T>& d_other);
 
     bool operator==(const iterator& i_other) const;
     bool operator!=(const iterator& i_other) const;
@@ -72,14 +77,87 @@ deque_iterator<T>::deque_iterator()
     ,m_indx_base(0){}
 
 template<class T>
-deque_iterator<T>::deque_iterator(const deque<T>& d_other)
-    :m_deq_ptr(&d_other)
-    ,m_indx_base(0){}
+deque_iterator<T>::deque_iterator(const deque<T>* d_other, std::size_t index)
+    :m_deq_ptr(d_other)
+    ,m_indx_base(index){}
 
 template<class T>
 deque_iterator<T>::deque_iterator(const typename deque_iterator<T>::iterator& i_other)
     :m_deq_ptr(i_other.m_deq_ptr)
     ,m_indx_base(i_other.m_indx_base){}
+
+template<class T>
+typename deque_iterator<T>::iterator& deque_iterator<T>::operator=(const typename deque_iterator<T>::iterator& i_other)
+{
+    if(this != &i_other)
+    {
+        m_indx_base = i_other.m_indx_base;
+        m_deq_ptr = i_other.m_deq_ptr;
+    }
+    return *this;
+}
+
+template<class T>
+bool deque_iterator<T>::operator==(const iterator& i_other) const
+{
+    if((m_deq_ptr != i_other.m_deq_ptr)||(m_indx_base != i_other.m_indx_base))
+    {
+        return false;
+    }
+    return true;
+}
+
+template<class T>
+bool deque_iterator<T>::operator!=(const iterator& i_other) const
+{
+    return !(*this == i_other);
+}
+
+template<class T>
+T& deque_iterator<T>::operator*() const
+{
+    assert((m_deq_ptr == nullptr) && "m_deq_ptr - novalid pointer");
+    assert(get_local(m_indx_base) && m_indx_base != m_deq_ptr->m_end);
+    return *(m_deq_ptr->m_buffer + m_indx_base);
+}
+
+template<class T>
+T& deque_iterator<T>::operator[](std::size_t indx)
+{
+    assert((m_deq_ptr == nullptr) && "m_deq_ptr - novalid pointer");
+    assert(get_local(m_indx_base) && m_indx_base != m_deq_ptr->m_end);
+    return m_deq_ptr->operator[](m_indx_base + indx);
+}
+
+template<class T>
+typename  deque_iterator<T>::iterator& deque_iterator<T>::operator++()
+{
+    ++m_indx_base;
+    return *this;
+}
+
+template<class T>
+typename  deque_iterator<T>::iterator& deque_iterator<T>::operator++(int junk)
+{
+    iterator itr(*this);
+    operator++();
+    return itr;
+}
+
+template<class T>
+typename  deque_iterator<T>::iterator& deque_iterator<T>::operator--()
+{
+    --m_indx_base;
+    return *this;
+}
+
+template<class T>
+typename  deque_iterator<T>::iterator& deque_iterator<T>::operator--(int junk)
+{
+    iterator itr(*this);
+    operator--();
+    return itr;
+}
 
 /**
  * @brief Basic implementation the double-ended queue using circular array
