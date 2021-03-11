@@ -66,6 +66,21 @@ public:
 
 };
 
+template<class T>
+deque_iterator<T>::deque_iterator()
+    :m_deq_ptr(nullptr)
+    ,m_indx_base(0){}
+
+template<class T>
+deque_iterator<T>::deque_iterator(const deque<T>& d_other)
+    :m_deq_ptr(&d_other)
+    ,m_indx_base(0){}
+
+template<class T>
+deque_iterator<T>::deque_iterator(const typename deque_iterator<T>::iterator& i_other)
+    :m_deq_ptr(i_other.m_deq_ptr)
+    ,m_indx_base(i_other.m_indx_base){}
+
 /**
  * @brief Basic implementation the double-ended queue using circular array
  */
