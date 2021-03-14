@@ -37,9 +37,9 @@ public:
     std::size_t size();
 
     iterator begin();
-    const iterator cbegin() const;
+    iterator cbegin() const;
     iterator end();
-    const iterator end() const;
+    iterator cend() const;
 
 };
 
@@ -50,16 +50,7 @@ template<class T, std::size_t N>
 array<T, N>::array()
     :m_size(N)
 {
-    assert((m_size <= 0) && "Size error - small size for allocate");
-
-    m_arr = new (std::nothrow) T[m_size];
-    if(m_arr != NULL)
-    {
-        for(std::size_t indx=0; indx<m_size; ++indx)
-        {
-            m_arr[indx] = NULL;
-        }
-    }
+    assert((m_size < 0) && "Size error - small size for allocate");
 }
 
 /**
@@ -140,31 +131,32 @@ array<T, N>& array<T, N>::operator=(const array<T, N>& other)
 template<class T, std::size_t N>
 T& array<T, N>::operator[](std::size_t pos)
 {
-
+    assert((pos<0 || pos>=m_size) && "Array error: pos out of range");
+    return m_arr[pos];
 }
 
 template<class T, std::size_t N>
 T& array<T, N>::front()
 {
-
+    return m_arr[0];
 }
 
 template<class T, std::size_t N>
 T& array<T, N>::back()
 {
-
+    return m_arr[m_size-1];
 }
 
 template<class T, std::size_t N>
 bool array<T, N>::empty()
 {
-
+    return m_size == 0;
 }
 
 template<class T, std::size_t N>
 std::size_t array<T, N>::size()
 {
-
+    return m_size;
 }
 
 template<class T, std::size_t N>
@@ -203,6 +195,30 @@ template<class T, std::size_t N>
 bool operator>(const array<T, N>& lhs, const array<T, N>& rhs)
 {
     return (rhs < lhs);
+}
+
+template<class T, std::size_t N>
+typename array<T, N>::iterator array<T, N>::begin()
+{
+    //TODO
+}
+
+template<class T, std::size_t N>
+typename array<T, N>::iterator array<T, N>::cbegin() const
+{
+    //TODO
+}
+
+template<class T, std::size_t N>
+typename array<T, N>::iterator array<T, N>::end()
+{
+    //TODO
+}
+
+template<class T, std::size_t N>
+typename array<T, N>::iterator array<T, N>::cend() const
+{
+    //TODO
 }
 
 }
