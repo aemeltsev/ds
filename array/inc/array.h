@@ -189,13 +189,20 @@ bool operator!=(const array<T, N>& lhs, const array<T, N>& rhs)
 template<class T, std::size_t N>
 bool operator<(const array<T, N>& lhs, const array<T, N>& rhs)
 {
-
+    if(lhs.size() > rhs.size()){
+        return false;
+    }
+    for(std::size_t indx=0; indx<N; ++indx)
+    {
+        if(lhs[indx] > rhs[indx]) return false;
+    }
+    return true;
 }
 
 template<class T, std::size_t N>
 bool operator>(const array<T, N>& lhs, const array<T, N>& rhs)
 {
-
+    return (rhs < lhs);
 }
 
 }
