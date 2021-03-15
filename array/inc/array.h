@@ -21,7 +21,20 @@ public:
 
     class iterator
     {
+    public:
+        iterator() noexcept {}
+        explicit iterator(T* ptr)
+            :m_ptr(ptr){}
 
+        inline iterator& operator=(const iterator& other){m_ptr = other.m_ptr;}
+
+        iterator& operator++(){++m_ptr; return *this;}
+        iterator& operator--(){--m_ptr; return *this;}
+        iterator operator++(int junk){iterator it = *this; ++m_ptr; return it;}
+        iterator operator--(int junk){iterator it = *this; ++m_ptr; return it;}
+
+    private:
+        T* m_ptr;
     };
 
     array();
