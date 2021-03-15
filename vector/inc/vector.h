@@ -2,7 +2,8 @@
 #define VECTOR_H
 #include <cstdint>
 #include <string>
-#include <cstddef>
+//#include <cstddef>
+#include <new>
 #include <limits>
 #include <cassert>
 
@@ -45,8 +46,10 @@ public:
 
         inline iterator& operator=(const iterator& other){m_ptr = other.m_ptr; return *this;}
 
-        iterator operator++(){iterator it = *this; m_ptr++; return it;}
-        iterator operator++(int junk){m_ptr++; return *this;}
+        iterator& operator++(){++m_ptr; return *this;}//++i
+        iterator& operator--(){--m_ptr; return *this;}//--i
+        iterator operator++(int junk){iterator it = *this; ++m_ptr; return it;}//i++
+        iterator operator--(int junk){iterator it = *this; --m_ptr; return it;}//i--
         inline T& operator*(){return *m_ptr;}
         inline T* operator->(){return m_ptr;}
         bool operator==(const iterator& other){return m_ptr == other.m_ptr;}
