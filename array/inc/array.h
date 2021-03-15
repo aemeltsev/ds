@@ -232,7 +232,10 @@ bool operator!=(const array<T, N>& lhs, const array<T, N>& rhs)
 }
 
 /**
- *
+ * @brief The operator smaller-than
+ * @param lhs The left operand of the expression. Transfer by the const reference
+ * @param rhs The right operand of the expression. Transfer by the const reference
+ * @return The bool value to returned
  */
 template<class T, std::size_t N>
 bool operator<(const array<T, N>& lhs, const array<T, N>& rhs)
@@ -248,7 +251,10 @@ bool operator<(const array<T, N>& lhs, const array<T, N>& rhs)
 }
 
 /**
- *
+ * @brief The operator larger-than
+ * @param lhs The left operand of the expression. Transfer by the const reference
+ * @param rhs The right operand of the expression. Transfer by the const reference
+ * @return The bool value to returned
  */
 template<class T, std::size_t N>
 bool operator>(const array<T, N>& lhs, const array<T, N>& rhs)
@@ -256,28 +262,44 @@ bool operator>(const array<T, N>& lhs, const array<T, N>& rhs)
     return (rhs < lhs);
 }
 
+/**
+* @brief Begin iterator.
+* @return An iterator to the first element.
+*/
 template<class T, std::size_t N>
 typename array<T, N>::iterator array<T, N>::begin()
 {
-    //TODO
+    return iterator(m_arr);
 }
 
+/**
+ * @brief Const begin iterator.
+ * @return An const iterator to the first element.
+ */
 template<class T, std::size_t N>
 typename array<T, N>::iterator array<T, N>::cbegin() const
 {
-    //TODO
+    return iterator(m_arr);
 }
 
+/**
+ * @brief End iterator.
+ * @return An iterator to one past the last element.
+ */
 template<class T, std::size_t N>
 typename array<T, N>::iterator array<T, N>::end()
 {
-    //TODO
+    return iterator(m_arr+m_size);
 }
 
+/**
+ * @brief Const end iterator.
+ * @return An const iterator to one past the last element.
+ */
 template<class T, std::size_t N>
 typename array<T, N>::iterator array<T, N>::cend() const
 {
-    //TODO
+    return iterator(m_arr+m_size);
 }
 
 }
