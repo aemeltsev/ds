@@ -9,7 +9,10 @@
 
 // Sequence containers library)
 namespace scl {
-
+/**
+ * Very basic implementaion std`s array, but using classes
+ * @brief This implementation of a conditionally "useful" array.
+ */
 template<class T, std::size_t N>
 class array
 {
@@ -57,7 +60,6 @@ public:
     iterator cbegin() const;
     iterator end();
     iterator cend() const;
-
 };
 
 /**
@@ -80,7 +82,7 @@ array<T, N>::~array()
 }
 
 /**
- * @brief For make object constructor uses initializer_list
+ * @brief For object make, constructor uses initializer_list
  */
 template<class T, std::size_t N>
 array<T, N>::array(std::initializer_list<T>& ilist)
@@ -145,6 +147,12 @@ array<T, N>& array<T, N>::operator=(const array<T, N>& other)
     }
 }
 
+/**
+ * @brief Operator - access by index
+ * @param pos The position of the element.
+ * @return A reference to the element at specified location index.
+ *         With bounds checking.
+ */
 template<class T, std::size_t N>
 T& array<T, N>::operator[](std::size_t pos)
 {
@@ -152,30 +160,52 @@ T& array<T, N>::operator[](std::size_t pos)
     return m_arr[pos];
 }
 
+/**
+ * @brief Get a first element from the array.
+ * @return The first element from the array
+ */
 template<class T, std::size_t N>
 T& array<T, N>::front()
 {
     return m_arr[0];
 }
 
+/**
+ * @brief Get a back element from the array.
+ * @return The back element from the array
+ */
 template<class T, std::size_t N>
 T& array<T, N>::back()
 {
     return m_arr[m_size-1];
 }
 
+/**
+ * @brief Checks whether the container is empty.
+ * @return True if is empty, false otherwise.
+ */
 template<class T, std::size_t N>
 bool array<T, N>::empty()
 {
     return m_size == 0;
 }
 
+/**
+ * @brief The number of elements.
+ * @return The number of elements in the container.
+ */
 template<class T, std::size_t N>
 std::size_t array<T, N>::size()
 {
     return m_size;
 }
 
+/**
+ * @brief Operator equal-to
+ * @param lhs The left operand of the expression. Transfer by the const reference
+ * @param rhs The right operand of the expression. Transfer by the const reference
+ * @return The bool value to returned
+ */
 template<class T, std::size_t N>
 bool operator==(const array<T, N>& lhs, const array<T, N>& rhs)
 {
@@ -189,12 +219,21 @@ bool operator==(const array<T, N>& lhs, const array<T, N>& rhs)
     return true;
 }
 
+/**
+ * @brief Operator not equal-to
+ * @param lhs The left operand of the expression. Transfer by the const reference
+ * @param rhs The right operand of the expression. Transfer by the const reference
+ * @return The bool value to returned
+ */
 template<class T, std::size_t N>
 bool operator!=(const array<T, N>& lhs, const array<T, N>& rhs)
 {
     return !(lhs == rhs);
 }
 
+/**
+ *
+ */
 template<class T, std::size_t N>
 bool operator<(const array<T, N>& lhs, const array<T, N>& rhs)
 {
@@ -208,6 +247,9 @@ bool operator<(const array<T, N>& lhs, const array<T, N>& rhs)
     return true;
 }
 
+/**
+ *
+ */
 template<class T, std::size_t N>
 bool operator>(const array<T, N>& lhs, const array<T, N>& rhs)
 {
