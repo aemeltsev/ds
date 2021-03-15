@@ -32,6 +32,10 @@ public:
         iterator& operator--(){--m_ptr; return *this;}
         iterator operator++(int junk){iterator it = *this; ++m_ptr; return it;}
         iterator operator--(int junk){iterator it = *this; ++m_ptr; return it;}
+        inline T& operator*(){return *m_ptr;}
+        inline T* operator->(){return m_ptr;}
+        bool operator==(const iterator& other){return m_ptr == other.m_ptr;}
+        bool operator!=(const iterator& other){return m_ptr != other.m_ptr;}
 
     private:
         T* m_ptr;
