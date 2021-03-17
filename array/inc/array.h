@@ -50,7 +50,9 @@ public:
     array(const array<T, N>& other);
     array& operator=(const array<T, N>& other);
 
-    T& operator[](std::size_t pos);
+    T& at(std::size_t pos);
+    T& operator [](std::size_t pos);
+    const T& operator [](std::size_t pos) const;
     T& front();
     T& back();
     bool empty();
@@ -148,6 +150,13 @@ array<T, N>& array<T, N>::operator=(const array<T, N>& other)
     }
 }
 
+template<typename T, std::size_t N>
+T& array<T, N>::at(std::size_t pos)
+{
+    assert((pos>=0 || pos<m_size) && "Array error: pos out of range");
+    return *(m_arr+pos);
+}
+
 /**
  * @brief Operator - access by index
  * @param pos The position of the element.
@@ -157,8 +166,15 @@ array<T, N>& array<T, N>::operator=(const array<T, N>& other)
 template<typename T, std::size_t N>
 T& array<T, N>::operator[](std::size_t pos)
 {
-    assert((pos<0 || pos>=m_size) && "Array error: pos out of range");
-    return *(m_arr+pos);
+    assert((pos>=0 || pos<m_size) && "Array error: pos out of range");
+    return m_arr[pos];
+}
+
+template<typename T, std::size_t N>
+const T& array<T, N>::operator[](std::size_t pos) const
+{
+    assert((pos>=0 || pos<m_size) && "Array error: pos out of range");
+    return m_arr[pos];
 }
 
 /**
