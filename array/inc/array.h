@@ -2,7 +2,7 @@
 #define ARRAY_H
 #include <cstdint>
 #include <string>
-#include <new>
+//#include <new>
 //#include <cstddef>
 #include <cassert>
 
@@ -13,7 +13,7 @@ namespace scl {
  * Very basic implementaion std`s array, but using classes
  * @brief This implementation of a conditionally "useful" array.
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N=0>
 class array
 {
 private:
@@ -46,7 +46,7 @@ public:
 
     array();
     ~array();
-    array(std::initializer_list<T>& ilist);
+    array(std::initializer_list<T> ilist);
     array(const array<T, N>& other);
     array& operator=(const array<T, N>& other);
 
@@ -65,7 +65,7 @@ public:
 /**
  * @brief Default constructor
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 array<T, N>::array()
     :m_size(N)
 {
@@ -75,7 +75,7 @@ array<T, N>::array()
 /**
  * @brief Destructor
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 array<T, N>::~array()
 {
     delete[] m_arr;
@@ -84,10 +84,10 @@ array<T, N>::~array()
 /**
  * @brief For object make, constructor uses initializer_list
  */
-template<class T, std::size_t N>
-array<T, N>::array(std::initializer_list<T>& ilist)
-    :m_size(ilist.size())
+template<typename T, std::size_t N>
+array<T, N>::array(std::initializer_list<T> ilist)
 {
+    m_size = ilist.size();
     m_arr = new (std::nothrow) T[m_size];
     if(m_arr != NULL)
     {
@@ -98,12 +98,13 @@ array<T, N>::array(std::initializer_list<T>& ilist)
             ++indx;
         }
     }
+    ++m_size;
 }
 
 /**
  * @brief Copy constructor
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 array<T, N>::array(const array<T, N>& other)
     :m_size(other.m_size)
 {
@@ -124,7 +125,7 @@ array<T, N>::array(const array<T, N>& other)
 /**
  * @brief Assignment operator
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 array<T, N>& array<T, N>::operator=(const array<T, N>& other)
 {
     if(this != &other)
@@ -153,18 +154,18 @@ array<T, N>& array<T, N>::operator=(const array<T, N>& other)
  * @return A reference to the element at specified location index.
  *         With bounds checking.
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 T& array<T, N>::operator[](std::size_t pos)
 {
     assert((pos<0 || pos>=m_size) && "Array error: pos out of range");
-    return m_arr[pos];
+    return *(m_arr+pos);
 }
 
 /**
  * @brief Get a first element from the array.
  * @return The first element from the array
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 T& array<T, N>::front()
 {
     return m_arr[0];
@@ -174,7 +175,7 @@ T& array<T, N>::front()
  * @brief Get a back element from the array.
  * @return The back element from the array
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 T& array<T, N>::back()
 {
     return m_arr[m_size-1];
@@ -184,7 +185,7 @@ T& array<T, N>::back()
  * @brief Checks whether the container is empty.
  * @return True if is empty, false otherwise.
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 bool array<T, N>::empty()
 {
     return m_size == 0;
@@ -194,7 +195,7 @@ bool array<T, N>::empty()
  * @brief The number of elements.
  * @return The number of elements in the container.
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 std::size_t array<T, N>::size()
 {
     return m_size;
@@ -206,7 +207,7 @@ std::size_t array<T, N>::size()
  * @param rhs The right operand of the expression. Transfer by the const reference
  * @return The bool value to returned
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 bool operator==(const array<T, N>& lhs, const array<T, N>& rhs)
 {
     if(lhs.size() != rhs.size()){
@@ -225,7 +226,7 @@ bool operator==(const array<T, N>& lhs, const array<T, N>& rhs)
  * @param rhs The right operand of the expression. Transfer by the const reference
  * @return The bool value to returned
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 bool operator!=(const array<T, N>& lhs, const array<T, N>& rhs)
 {
     return !(lhs == rhs);
@@ -237,7 +238,7 @@ bool operator!=(const array<T, N>& lhs, const array<T, N>& rhs)
  * @param rhs The right operand of the expression. Transfer by the const reference
  * @return The bool value to returned
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 bool operator<(const array<T, N>& lhs, const array<T, N>& rhs)
 {
     if(lhs.size() > rhs.size()){
@@ -256,7 +257,7 @@ bool operator<(const array<T, N>& lhs, const array<T, N>& rhs)
  * @param rhs The right operand of the expression. Transfer by the const reference
  * @return The bool value to returned
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 bool operator>(const array<T, N>& lhs, const array<T, N>& rhs)
 {
     return (rhs < lhs);
@@ -266,7 +267,7 @@ bool operator>(const array<T, N>& lhs, const array<T, N>& rhs)
 * @brief Begin iterator.
 * @return An iterator to the first element.
 */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 typename array<T, N>::iterator array<T, N>::begin()
 {
     return iterator(m_arr);
@@ -276,7 +277,7 @@ typename array<T, N>::iterator array<T, N>::begin()
  * @brief Const begin iterator.
  * @return An const iterator to the first element.
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 typename array<T, N>::iterator array<T, N>::cbegin() const
 {
     return iterator(m_arr);
@@ -286,7 +287,7 @@ typename array<T, N>::iterator array<T, N>::cbegin() const
  * @brief End iterator.
  * @return An iterator to one past the last element.
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 typename array<T, N>::iterator array<T, N>::end()
 {
     return iterator(m_arr+m_size);
@@ -296,7 +297,7 @@ typename array<T, N>::iterator array<T, N>::end()
  * @brief Const end iterator.
  * @return An const iterator to one past the last element.
  */
-template<class T, std::size_t N>
+template<typename T, std::size_t N>
 typename array<T, N>::iterator array<T, N>::cend() const
 {
     return iterator(m_arr+m_size);
