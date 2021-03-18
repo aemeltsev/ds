@@ -2,8 +2,8 @@
 #define DEQUE_H
 #include <cstdint>
 #include <string>
-#include <cstddef>
-#include <limits>
+#include <new>
+//#include <cstddef>
 #include <cassert>
 
 /**

@@ -228,8 +228,8 @@ T& vector<T>::front()
 };
 
 /**
- * @brief Get a first element from the array.
- * @return The first element from the array
+ * @brief Get a back element from the array.
+ * @return The back element from the array
  */
 template<class T>
 T& vector<T>::back()

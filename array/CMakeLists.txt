@@ -47,7 +47,7 @@ set(REQUIRED_LIBRARIES pthread gtest)
 add_compile_options(-std=c++11 -g -Wall)
 
 add_executable(${BIN} ${SOURCES})
-target_link_libraries(${BIN} ${EXTRA_LIBS} ${REQUIRED_LIBRARIES})
+target_link_libraries(${BIN} PRIVATE ${EXTRA_LIBS} ${REQUIRED_LIBRARIES})
 
 ############################################################
 # Install
