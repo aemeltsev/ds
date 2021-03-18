@@ -13,7 +13,7 @@ namespace scl {
  * Very basic implementaion std`s array, but using classes
  * @brief This implementation of a conditionally "useful" array.
  */
-template<typename T, std::size_t N=0>
+template<typename T, std::size_t N>
 class array
 {
 private:
@@ -71,7 +71,7 @@ template<typename T, std::size_t N>
 array<T, N>::array()
     :m_size(N)
 {
-    assert((m_size < 0) && "Size error - small size for allocate");
+    assert((m_size >= 0) && "Size error - small size for allocate");
 }
 
 /**
@@ -80,7 +80,7 @@ array<T, N>::array()
 template<typename T, std::size_t N>
 array<T, N>::~array()
 {
-    delete[] m_arr;
+    delete m_arr;
 }
 
 /**
@@ -88,8 +88,8 @@ array<T, N>::~array()
  */
 template<typename T, std::size_t N>
 array<T, N>::array(std::initializer_list<T> ilist)
+    :m_size(ilist.size())
 {
-    m_size = ilist.size();
     m_arr = new (std::nothrow) T[m_size];
     if(m_arr != NULL)
     {
@@ -194,7 +194,7 @@ T& array<T, N>::front()
 template<typename T, std::size_t N>
 T& array<T, N>::back()
 {
-    return m_arr[m_size-1];
+    return m_arr[m_size];
 }
 
 /**
