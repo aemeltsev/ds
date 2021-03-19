@@ -8,9 +8,76 @@
 #include "vector.h"
 
 namespace vector_testing {
+const std::size_t num_of_elements = 100001;
+const int module = 1000000;
+
+/**
+ * @brief get_time_sec - get time in seconds
+ * @return the time in seconds
+ */
+inline double get_time_sec()
+{
+    return static_cast<double>(clock())/ CLOCKS_PER_SEC;
+}
+
+/**
+ * @brief get_new_time calculating the total time and setting the current time in seconds
+ * @param sum_time - summary time
+ * @param last_time - last time value
+ */
+void get_new_time(double &sum_time, double &last_time)
+{
+    sum_time += get_time_sec() - last_time;
+    last_time = get_time_sec();
+}
+
+/**
+ * @brief nop
+ */
+template <typename T>
+void do_nothing(const T &elem)
+{
+    return;
+}
+
+/**
+ * @brief container filling
+ */
+template<typename T>
+void fill(scl::vector<T> *vec)
+{
+    for(std::size_t ind=0; ind<num_of_elements; ++ind)
+    {
+        vec->push_back(rand() % module);
+    }
+}
+
+class ArrayCheckFixture: public ::testing::Test
+{
+public:
+    scl::vector<int> *vec;
+    double sum_time = 0, last_time = 0;
+
+    static void SetUpTestSuite() {}
+    static void TearDownTestSuite() {}
+
+protected:
+
+    void SetUp() override
+    {
+        vec = new scl::vector<int>;
+        sum_time = 0;
+        last_time = get_time_sec();
+    }
+
+    void TearDown() override
+    {
+        delete vec;
+    }
+
+};
 
 /*
-
 template<class T>
 void print_arr(std::ostream &out, const typename scl::vector<T>& vector)
 {
@@ -55,7 +122,7 @@ int main()
     }
     print_arr(std::cout, arr);
 
-/*
+
     //
     tmp = list.front();
     while(tmp != NULL)
