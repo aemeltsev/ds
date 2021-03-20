@@ -96,6 +96,7 @@ template<class T>
 vector<T>::vector() noexcept
 {
     m_arr = new (std::nothrow) T[m_cap];
+    assert((m_arr == NULL) && "Vector error: unable to allocate memory in default constructor" );
 }
 
 /**
@@ -107,6 +108,7 @@ vector<T>::vector(std::size_t in)
     m_size = in;
     m_cap = in+in/2+1;
     m_arr = new (std::nothrow) T[m_cap];
+    assert((m_arr == NULL) && "Vector error: unable to allocate memory in default constructor" );
 }
 
 /**
@@ -114,13 +116,19 @@ vector<T>::vector(std::size_t in)
  */
 template<class T>
 vector<T>::vector(const vector<T>& other)
+    :m_size(other.m_size)
+    ,m_cap(other.m_cap)
 {
-    m_size = other.m_size;
-    m_cap = other.m_cap;
-    m_arr = new T[m_cap];
-    for(std::size_t i=0; i<m_size; ++i)
+    m_arr = new (std::nothrow) T[m_cap];
+    if(m_arr != NULL){
+        for(std::size_t i=0; i<m_size; ++i)
+        {
+            m_arr[i] = other.m_arr[i];
+        }
+    }
+    else
     {
-        m_arr[i] = other.m_arr[i];
+        assert(m_arr && "Vector error: unable to allocate memory in default constructor");
     }
 }
 
@@ -142,7 +150,12 @@ vector<T>& vector<T>::operator=(const vector<T>& other)
     if(this == &other){
         return *this;
     }
-    swap(vector<T>(other));
+    if(other.m_arr){
+        swap(vector<T>(other));
+    }
+    else{
+        m_arr = nullptr;
+    }
     return *this;
 }
 
