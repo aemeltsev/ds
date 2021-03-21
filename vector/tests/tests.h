@@ -5,11 +5,13 @@
 #include <ctime>
 #include <gtest/gtest.h>
 
+#include <vector>
 #include "vector.h"
 
 namespace vector_testing {
 const std::size_t num_of_elements = 100001;
 const int module = 1000000;
+const double o1_time = 5 * 1e-06;
 
 /**
  * @brief get_time_sec - get time in seconds
@@ -52,14 +54,14 @@ void fill(scl::vector<T> *vec)
     }
 }
 
-class ArrayCheckFixture: public ::testing::Test
+class VectorCheckFixture: public ::testing::Test
 {
 public:
     scl::vector<int> *vec;
     double sum_time = 0, last_time = 0;
 
-    static void SetUpTestSuite() {}
-    static void TearDownTestSuite() {}
+    static void SetUpTestSuite() {std::cout << "Set Up Test Suite" << "\n";}
+    static void TearDownTestSuite() {std::cout << "Tear Down Test Suite" << "\n";}
 
 protected:
 
@@ -76,6 +78,86 @@ protected:
     }
 
 };
+
+class VectorCompareFixture: public ::testing::Test
+{
+public:
+    scl::vector<int> *vec;
+    std::vector<int> *vec_std;
+    double sum_time, last_time;
+
+    static void SetUpTestSuite() {std::cout << "Set Up Test Suite" << "\n";}
+    static void TearDownTestSuite() {std::cout << "Tear Down Test Suite" << "\n";}
+
+protected:
+
+    void SetUp() override
+    {
+        vec = new scl::vector<int>;
+        vec_std = new std::vector<int>;
+
+        sum_time = 0;
+        last_time = get_time_sec();
+    }
+
+    void TearDown() override
+    {
+        delete vec;
+        delete vec_std;
+    }
+};
+
+TEST_F(VectorCheckFixture, CheckPushBack)
+{
+    //Arrange
+    //Act
+    for(std::size_t i=0; i<num_of_elements; ++i)
+    {
+        vec->push_back(rand() % module);
+        get_new_time(sum_time, last_time);
+    }
+
+    ASSERT_EQ(vec->size(), num_of_elements);
+}
+
+TEST_F(VectorCompareFixture, StandartOperations)
+{
+    for(std::size_t i=0; i<num_of_elements; ++i)
+    {
+        int k = rand() % module - module/2;
+        vec->push_back(k);
+        vec_std->push_back(k);
+        ASSERT_EQ(vec->size(), vec_std->size());
+        ASSERT_EQ(vec->front(), vec_std->front());
+        ASSERT_EQ(vec->back(), vec_std->back());
+    }
+    const scl::vector<int> *cvec = new scl::vector<int>(*vec);
+    int constant = 2*num_of_elements;
+    for(std::size_t i=0; i<num_of_elements/2; ++i)
+    {
+        int k = rand() % module - module/2;
+        int index = rand() % (constant);
+        ASSERT_EQ((*vec)[index], (*vec_std)[index]);
+        ASSERT_EQ(vec->size(), cvec->size());
+        ASSERT_EQ(vec->back(), vec_std->back());
+        (*vec)[index] = k;
+        (*vec_std)[index] = k;
+        ASSERT_EQ((*vec)[index], (*vec_std)[index]);
+        ASSERT_EQ(vec->front(), vec_std->front());
+        ASSERT_EQ(vec->back(), vec_std->back());
+    }
+    delete cvec;
+    for(int i=0; i<constant; ++i)
+    {
+        ASSERT_EQ(vec->front(), vec_std->front());
+        ASSERT_EQ(vec->back(), vec_std->back());
+        vec->pop_back();
+        vec_std->pop_back();
+        ASSERT_EQ(vec->size(), vec->size());
+    }
+    ASSERT_EQ(vec->empty(), vec_std->empty());
+}
+
 
 /*
 template<class T>
