@@ -50,7 +50,7 @@ void fill(scl::vector<T> *vec)
 {
     for(std::size_t ind=0; ind<num_of_elements; ++ind)
     {
-        vec->push_back(rand() % module);
+        vec->push_back(static_cast<int>(std::rand() % module));
     }
 }
 
@@ -113,25 +113,42 @@ TEST_F(VectorCheckFixture, CheckPushBack)
     //Act
     for(std::size_t i=0; i<num_of_elements; ++i)
     {
-        vec->push_back(rand() % module);
+        vec->push_back(static_cast<int>(std::rand() % module));
         get_new_time(sum_time, last_time);
     }
-
+    //Assert
     ASSERT_EQ(vec->size(), num_of_elements);
+
+}
+
+TEST_F(VectorCheckFixture, CheckPopBack)
+{
+    //Arrange
+    fill(vec);
+    last_time = get_time_sec();
+    //Act
+    for(std::size_t i=0; i<num_of_elements; ++i)
+    {
+        vec->pop_back();
+        get_new_time(sum_time, last_time);
+    }
+    //Assert
+    ASSERT_TRUE(vec->empty());
+
 }
 
 TEST_F(VectorCompareFixture, StandartOperations)
 {
     for(std::size_t i=0; i<num_of_elements; ++i)
     {
-        int k = rand() % module - module/2;
+        int k = std::rand() % module - module/2;
         vec->push_back(k);
         vec_std->push_back(k);
         ASSERT_EQ(vec->size(), vec_std->size());
         ASSERT_EQ(vec->front(), vec_std->front());
         ASSERT_EQ(vec->back(), vec_std->back());
     }
-    const scl::vector<int> *cvec = new scl::vector<int>(*vec);
+/*    const scl::vector<int> *cvec = new scl::vector<int>(*vec);
     int constant = 2*num_of_elements;
     for(std::size_t i=0; i<num_of_elements/2; ++i)
     {
@@ -155,37 +172,15 @@ TEST_F(VectorCompareFixture, StandartOperations)
         vec_std->pop_back();
         ASSERT_EQ(vec->size(), vec->size());
     }
-    ASSERT_EQ(vec->empty(), vec_std->empty());
+    ASSERT_EQ(vec->empty(), vec_std->empty());*/
 }
 
 
 /*
-template<class T>
-void print_arr(std::ostream &out, const typename scl::vector<T>& vector)
-{
-    typename scl::vector<T>::iterator it;
-    for(it = vector.cbegin(); it!=vector.cend(); it++)
-    {
-        out << *it << " ";
-    }
-    out << std::endl;
-}
 
 int main()
 {
-    scl::vector<int> arr;
-    arr.push_back(1);
-    arr.push_back(2);
-    arr.push_back(3);
-    arr.push_back(3);
-    print_arr(std::cout, arr);
-    std::cout << "Size: " << arr.size() << "\n";
-    std::cout << "Capacity: " << arr.capacity() << "\n";
 
-    for(int i=0; i<16; ++i)
-    {
-        arr.push_back(3 + static_cast<int>(std::rand()%3));
-    }
     arr.push_back(8);
     print_arr(std::cout, arr);
     std::cout << "Size: " << arr.size() << "\n";

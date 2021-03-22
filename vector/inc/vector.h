@@ -2,7 +2,6 @@
 #define VECTOR_H
 #include <cstdint>
 #include <string>
-//#include <cstddef>
 #include <new>
 #include <limits>
 #include <cassert>
@@ -95,8 +94,7 @@ public:
 template<class T>
 vector<T>::vector() noexcept
 {
-    m_arr = new (std::nothrow) T[m_cap];
-    assert((m_arr == NULL) && "Vector error: unable to allocate memory in default constructor" );
+    m_arr = new T[m_cap];
 }
 
 /**
@@ -236,7 +234,7 @@ typename vector<T>::iterator vector<T>::cend() const
 template<class T>
 T& vector<T>::front()
 {
-    assert(size() == 0 || capacity() == 0 && "vector is empty - size() == 0");
+    //assert(size() == 0 || capacity() == 0 && "vector is empty - size() == 0");
     return m_arr[0];
 };
 
@@ -247,7 +245,7 @@ T& vector<T>::front()
 template<class T>
 T& vector<T>::back()
 {
-    assert(size() == 0 || capacity() == 0 && "vector is empty - size() == 0");
+    //assert(size() == 0 || capacity() == 0 && "vector is empty - size() == 0");
     return m_arr[m_size-1];
 }
 
@@ -272,9 +270,8 @@ void vector<T>::push_back(const T& data)
 template<class T>
 void vector<T>::pop_back()
 {
-    assert(size() == 0 && "vector is empty - size() == 0");
-    //m_arr[m_size]->~T();
     --m_size;
+    m_arr[m_size].~T();
 }
 
 /**
@@ -372,9 +369,10 @@ typename vector<T>::iterator vector<T>::erase(iterator& pos)
 template<class T>
 void vector<T>::clear()
 {
+    delete[] m_arr;
+    m_arr = nullptr;
     m_cap=0;
     m_size=0;
-    m_arr = nullptr;
 }
 
 /**
