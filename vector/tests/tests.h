@@ -141,30 +141,28 @@ TEST_F(VectorCompareFixture, StandartOperations)
 {
     for(std::size_t i=0; i<num_of_elements; ++i)
     {
-        int k = std::rand() % module - module/2;
+        int k = static_cast<int>(std::rand() % module - module/2);
         vec->push_back(k);
         vec_std->push_back(k);
         ASSERT_EQ(vec->size(), vec_std->size());
         ASSERT_EQ(vec->front(), vec_std->front());
         ASSERT_EQ(vec->back(), vec_std->back());
     }
-/*    const scl::vector<int> *cvec = new scl::vector<int>(*vec);
-    int constant = 2*num_of_elements;
+    const scl::vector<int> *cvec = new scl::vector<int>(*vec);
     for(std::size_t i=0; i<num_of_elements/2; ++i)
     {
         int k = rand() % module - module/2;
-        int index = rand() % (constant);
-        ASSERT_EQ((*vec)[index], (*vec_std)[index]);
+        ASSERT_EQ((*vec)[i], (*vec_std)[i]);
         ASSERT_EQ(vec->size(), cvec->size());
         ASSERT_EQ(vec->back(), vec_std->back());
-        (*vec)[index] = k;
-        (*vec_std)[index] = k;
-        ASSERT_EQ((*vec)[index], (*vec_std)[index]);
+        (*vec)[i] = k;
+        (*vec_std)[i] = k;
+        ASSERT_EQ((*vec)[i], (*vec_std)[i]);
         ASSERT_EQ(vec->front(), vec_std->front());
         ASSERT_EQ(vec->back(), vec_std->back());
     }
     delete cvec;
-    for(int i=0; i<constant; ++i)
+    for(std::size_t i=0; i<num_of_elements; ++i)
     {
         ASSERT_EQ(vec->front(), vec_std->front());
         ASSERT_EQ(vec->back(), vec_std->back());
@@ -172,7 +170,7 @@ TEST_F(VectorCompareFixture, StandartOperations)
         vec_std->pop_back();
         ASSERT_EQ(vec->size(), vec->size());
     }
-    ASSERT_EQ(vec->empty(), vec_std->empty());*/
+    ASSERT_EQ(vec->empty(), vec_std->empty());
 }
 
 
@@ -180,12 +178,6 @@ TEST_F(VectorCompareFixture, StandartOperations)
 
 int main()
 {
-
-    arr.push_back(8);
-    print_arr(std::cout, arr);
-    std::cout << "Size: " << arr.size() << "\n";
-    std::cout << "Capacity: " << arr.capacity() << "\n";
-
     //
     scl::vector<int>::iterator iter = arr.begin();
     while(iter != arr.end())
