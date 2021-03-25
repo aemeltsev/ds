@@ -173,43 +173,24 @@ TEST_F(VectorCompareFixture, StandartOperations)
     ASSERT_EQ(vec->empty(), vec_std->empty());
 }
 
-
-/*
-
-int main()
+TEST_F(VectorCompareFixture, IteratorOperation)
 {
-    //
-    scl::vector<int>::iterator iter = arr.begin();
-    while(iter != arr.end())
+    for(std::size_t i=0; i<num_of_elements; ++i)
     {
-        if(*iter == 3){
-            //
-            iter = arr.erase(iter);
-        }else{
-            iter++;
-        }
+        int k = static_cast<int>(std::rand() % module - module/2);
+        vec->push_back(k);
+        vec_std->push_back(k);
+        ASSERT_EQ(vec->size(), vec_std->size());
+        ASSERT_EQ(vec->front(), vec_std->front());
+        ASSERT_EQ(vec->back(), vec_std->back());
     }
-    print_arr(std::cout, arr);
-
-
-    //
-    tmp = list.front();
-    while(tmp != NULL)
+    scl::vector<int>::iterator iter = vec->begin();
+    std::vector<int>::iterator iter_std = vec_std->begin();
+    for(; iter != vec->end(); iter++, iter_std++)
     {
-        if(tmp->m_val == 4.){
-            tmp = list.insert(tmp, 1.);
-            assert(tmp != NULL);
-        }
-        tmp = tmp->m_next;
+        ASSERT_EQ(*iter, *iter_std);
     }
-    print_list(std::cout, list);
-
-    //delete 2-elements from tail
-    list.pop_back();
-    list.pop_back();
-    print_list(std::cout, list);
-    list.clear();
-*/
+}
 }
 
 #endif //VECTOR_TESTS_H
