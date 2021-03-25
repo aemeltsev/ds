@@ -29,8 +29,8 @@ class vector
 {
 private:
     T* m_arr = nullptr;
-    std::size_t m_cap = DEFAULT_CAPACITE_SIZE;
     std::size_t m_size = 0;
+    std::size_t m_cap = DEFAULT_CAPACITE_SIZE;
     
     inline void move_storage(T* dest, T* from, std::size_t n);
     inline void swap(vector<T>& other);
@@ -61,7 +61,7 @@ public:
 
     vector() noexcept;
     explicit vector(std::size_t in);
-    explicit vector(const vector<T>& other);
+    explicit vector(const vector<T> &other);
     ~vector();
     vector<T>& operator=(const vector<T>& other);
 
@@ -234,7 +234,6 @@ typename vector<T>::iterator vector<T>::cend() const
 template<class T>
 T& vector<T>::front()
 {
-    //assert(size() == 0 || capacity() == 0 && "vector is empty - size() == 0");
     return m_arr[0];
 };
 
@@ -245,7 +244,6 @@ T& vector<T>::front()
 template<class T>
 T& vector<T>::back()
 {
-    //assert(size() == 0 || capacity() == 0 && "vector is empty - size() == 0");
     return m_arr[m_size-1];
 }
 
@@ -384,7 +382,7 @@ void vector<T>::clear()
 template<class T>
 T& vector<T>::operator[](std::size_t index)
 {
-    assert((index>=0 && index<m_size) && "index out of range - m_arr[index]");
+    //assert((index>=0 && index<m_size) && "index out of range - m_arr[index]");
     return m_arr[index];
 }
 
@@ -397,7 +395,7 @@ T& vector<T>::operator[](std::size_t index)
 template<class T>
 const T& vector<T>::operator[](std::size_t index) const
 {
-    assert((index>=0 && index<m_size) && "index out of range - m_arr[index]");
+    //assert((index>=0 && index<m_size) && "index out of range - m_arr[index]");
     return m_arr[index];
 }
 
