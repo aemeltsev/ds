@@ -39,6 +39,7 @@ public:
         inline bool operator !=(const iterator& other) const {return ptr_node != other.ptr_node;}
         friend flist<T>::iterator flist<T>::insert_after(const iterator &pos, const T &data);
         friend flist<T>::iterator flist<T>::erase(iterator& pos);
+        friend void flist<T>::swap(iterator &first, iterator &second);
 
     private:
         tnode *ptr_node;
@@ -60,7 +61,7 @@ public:
     // Delete all nodes
     void clear();
     // Swapping of the two nodes
-    void swap(tnode *first, tnode *second);
+    void swap(iterator &first, iterator &second);
     //Capacity
     inline std::size_t size() const noexcept;
     inline bool empty() const noexcept;
@@ -243,18 +244,23 @@ void flist<T>::clear()
 
 //TODO
 template<class T>
-void flist<T>::swap(tnode *first, tnode *second)
+void flist<T>::swap(iterator& first, iterator& second)
 {
+    tnode* first_node = first.ptr_node;
+    tnode* second_node = second.ptr_node;
+
     // First or second is not exist
-    if((first == NULL)||(second == NULL)) return;
+    if((first_node == NULL)||(second_node == NULL)) return;
+
     // If one node is specified twice, there is nothing to change
-    if(first == second) return;
+    if(first_node == second_node) return;
     // If first and second node the are near, swap them
-    if(second->m_next == first){
-        tnode *tmp = first;
-        first = second;
-        second = tmp;
+    if(second_node->m_next == first_node){
+        tnode *tmp = first_node;
+        first_node = second_node;
+        second_node = tmp;
     }
+    /*
     tnode *prev_first = prev(first);
     tnode *prev_second = prev(second);
     tnode *next_first = next(first);
@@ -284,6 +290,9 @@ void flist<T>::swap(tnode *first, tnode *second)
     }
     second->m_next = next_first;
     first->m_next = next_second;
+    */
+
+
 }
 
 template<class T>
