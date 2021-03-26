@@ -18,10 +18,17 @@ private:
         T m_val;
         tnode *m_next = nullptr;
     };
-private:
+
     tnode *m_head;
     tnode *m_tail;
     std::size_t m_count;
+
+    //private methdots
+    void copy_flist(const flist<T> &other);
+    // Search prev node for pos
+    tnode* prev(tnode* pos);
+    // Return next node for this
+    tnode* next(tnode* pos);
 
 public:
     class iterator
@@ -72,13 +79,6 @@ public:
     inline iterator cbegin() const;
     inline iterator end();
     inline iterator cend() const;
-
-    private:
-    void copy_flist(const flist<T> &other);
-    // Search prev node for pos
-    tnode* prev(tnode* pos);
-    // Return next node for this
-    tnode* next(tnode* pos);
 };
 
 template<class T>
