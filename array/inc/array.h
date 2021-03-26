@@ -2,8 +2,7 @@
 #define ARRAY_H
 #include <cstdint>
 #include <string>
-//#include <new>
-//#include <cstddef>
+#include <new>
 #include <cassert>
 
 
@@ -31,10 +30,10 @@ public:
 
         inline iterator& operator=(const iterator& other){m_ptr = other.m_ptr;}
 
-        iterator& operator++(){++m_ptr; return *this;}
-        iterator& operator--(){--m_ptr; return *this;}
-        iterator operator++(int junk){iterator it = *this; ++m_ptr; return it;}
-        iterator operator--(int junk){iterator it = *this; ++m_ptr; return it;}
+        iterator& operator++(){++m_ptr; return *this;}//++i
+        iterator& operator--(){--m_ptr; return *this;}//--i
+        iterator operator++(int junk){iterator it = *this; ++m_ptr; return it;}//i++
+        iterator operator--(int junk){iterator it = *this; ++m_ptr; return it;}//i--
         inline T& operator*(){return *m_ptr;}
         inline T* operator->(){return m_ptr;}
         bool operator==(const iterator& other){return m_ptr == other.m_ptr;}
@@ -71,7 +70,7 @@ template<typename T, std::size_t N>
 array<T, N>::array()
     :m_size(N)
 {
-    assert((m_size >= 0) && "Size error - small size for allocate");
+    m_arr = new T[m_size];
 }
 
 /**
@@ -80,7 +79,7 @@ array<T, N>::array()
 template<typename T, std::size_t N>
 array<T, N>::~array()
 {
-    delete m_arr;
+    delete[] m_arr;
 }
 
 /**
@@ -148,8 +147,14 @@ array<T, N>& array<T, N>::operator=(const array<T, N>& other)
             assert(m_arr && "Array error: unable to allocate memory in default constructor");
         }
     }
+    return *this;
 }
 
+/**
+ * @brief Returns a reference to the element at specified location pos, with bounds checking
+ * @param pos -	position of the element to return
+ * @return Reference to the requested element
+ */
 template<typename T, std::size_t N>
 T& array<T, N>::at(std::size_t pos)
 {
@@ -170,6 +175,12 @@ T& array<T, N>::operator[](std::size_t pos)
     return m_arr[pos];
 }
 
+/**
+ * @brief Const operator - access by index
+ * @param pos The position of the element.
+ * @return A const reference to the element at specified location index.
+ *         With bounds checking.
+ */
 template<typename T, std::size_t N>
 const T& array<T, N>::operator[](std::size_t pos) const
 {
