@@ -81,6 +81,9 @@ public:
     inline iterator cend() const;
 };
 
+/**
+ * @brief Default ctor
+ */
 template<class T>
 flist<T>::flist() noexcept
     :m_head(nullptr)
@@ -88,12 +91,18 @@ flist<T>::flist() noexcept
     ,m_count(0)
 {}
 
+/**
+ * @brief Copy ctor
+ */
 template<class T>
 flist<T>::flist(const flist &other)
 {
     copy_flist(other);
 }
 
+/**
+ * @brief Assignment operator
+ */
 template<class T>
 flist<T>& flist<T>::operator=(const flist &other)
 {
@@ -108,6 +117,9 @@ flist<T>& flist<T>::operator=(const flist &other)
     return *this;
 }
 
+/**
+ * @brief Dtor
+ */
 template<class T>
 flist<T>::~flist()
 {
@@ -351,7 +363,9 @@ inline typename flist<T>::iterator flist<T>::cend() const
 }
 
 /**
- *
+ * @brief Private internal method. Check the head node of validity
+ *        and then sequentially adds nodes with the given value.
+ * @param other const reference other flist for copy
  */
 template<class T>
 void flist<T>::copy_flist(const flist<T>& other)
@@ -366,7 +380,7 @@ void flist<T>::copy_flist(const flist<T>& other)
 }
 
 /**
- *
+ * @brief Private internal method.
  */
 template<class T>
 typename flist<T>::tnode* flist<T>::prev(tnode* pos)
@@ -385,7 +399,7 @@ typename flist<T>::tnode* flist<T>::prev(tnode* pos)
 }
 
 /**
- *
+ * @brief Private internal method.
  */
 template<class T>
 typename flist<T>::tnode* flist<T>::next(tnode* pos)
