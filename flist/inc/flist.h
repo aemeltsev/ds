@@ -1,4 +1,4 @@
-#ifndef FLIST_H
+﻿#ifndef FLIST_H
 #define FLIST_H
 #include <cstdint>
 #include <string>
@@ -254,7 +254,9 @@ void flist<T>::clear()
     m_count = 0;
 }
 
-//TODO
+/**
+ *
+ */
 template<class T>
 void flist<T>::swap(iterator& first, iterator& second)
 {
@@ -272,39 +274,36 @@ void flist<T>::swap(iterator& first, iterator& second)
         first_node = second_node;
         second_node = tmp;
     }
-    /*
-    tnode *prev_first = prev(first);
-    tnode *prev_second = prev(second);
-    tnode *next_first = next(first);
-    tnode *next_second = next(second);
+
+    tnode *prev_first_node = prev(first_node);
+    tnode *prev_second_node = prev(second_node);
+    tnode *next_first_node = next(first_node);
+    tnode *next_second_node = next(second_node);
     // Swap of neighboring nodes
-    if(next_first == second){
-        if(prev_first != NULL){
-            prev_first->m_next = second;
+    if(prev_first_node == second_node){
+        if(prev_first_node != NULL){
+            prev_first_node->m_next = second_node;
         }else{
-            m_head = second;
+            m_head = second_node;
         }
-        second->m_next = first;
-        first->m_next = second;
+        second_node->m_next = first_node;
+        first_node->m_next = second_node;
         return;
     }
     // Swap of distant nodes
-    if(prev_first !=NULL){
-        prev_first->m_next = second;
+    if(prev_first_node !=NULL){
+        prev_first_node->m_next = second_node;
     }else{
-        m_head = second;
+        m_head = second_node;
     }
-    if(prev_second != NULL){
-        prev_second->m_next = first;
+    if(second_node != NULL){
+        prev_second_node->m_next = first_node;
     }
     else{
-        m_head = first;
+        m_head = first_node;
     }
-    second->m_next = next_first;
-    first->m_next = next_second;
-    */
-
-
+    second_node->m_next = next_first_node;
+    first_node->m_next = next_second_node;
 }
 
 template<class T>
