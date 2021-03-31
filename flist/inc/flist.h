@@ -16,7 +16,7 @@ private:
     struct tnode
     {
         T m_val;
-        tnode *m_next = nullptr;
+        tnode *m_next;
     };
 
     tnode *m_head;
@@ -244,14 +244,15 @@ void flist<T>::clear()
     if(empty()){
         return;
     }
-    tnode *tmp;
-    while(m_head != nullptr){
-        tmp = m_head;
-        m_head = m_head->m_next;
-        delete tmp;
+
+    tnode *current_tnode = m_head;
+    while(current_tnode != nullptr){
+        tnode* next_tnode = current_tnode->m_next;
+        delete current_tnode;
+        current_tnode = next_tnode;
+        --m_count;
     }
-    delete m_tail;
-    m_count = 0;
+    m_head = nullptr;
 }
 
 /**
