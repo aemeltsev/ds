@@ -45,7 +45,7 @@ public:
         inline bool operator ==(const iterator& other) const {return ptr_node == other.ptr_node;}
         inline bool operator !=(const iterator& other) const {return ptr_node != other.ptr_node;}
         friend flist<T>::iterator flist<T>::insert_after(const iterator &pos, const T &data);
-        friend flist<T>::iterator flist<T>::erase(iterator& pos);
+        friend flist<T>::iterator flist<T>::erase_after(iterator& pos);
         friend void flist<T>::swap(iterator &first, iterator &second);
 
     private:
@@ -62,7 +62,7 @@ public:
     // Insert node, with value data, before pos node
     iterator insert_after(const iterator& pos, const T &data);
     // Removes the element at pos
-    iterator erase(iterator& pos);
+    iterator erase_after(iterator& pos);
     void push_front(const T& data);
     void pop_front();
     // Delete all nodes
@@ -187,25 +187,15 @@ typename flist<T>::iterator flist<T>::insert_after(const iterator& pos, const T 
  * @brief
  */
 template<class T>
-typename flist<T>::iterator flist<T>::erase(iterator& pos)
+typename flist<T>::iterator flist<T>::erase_after(iterator& pos)
 {
-    tnode* prev_pos = prev(pos.ptr_node);
     tnode* curr_pos = pos.ptr_node;
 
-    if(curr_pos == m_head){
-        m_head = m_head->m_next;
-    }
-    else{
-        prev_pos->m_next = curr_pos->m_next;
-        if(curr_pos == m_tail){
-            m_tail = prev_pos;
-        }
-    }
-        tnode* tmp = curr_pos->m_next;
-        prev_pos->m_next = tmp;
-        delete curr_pos;
-        m_count--;
-        return iterator(tmp);
+    tnode* tmp = curr_pos->m_next;
+    curr_pos->m_next = tmp->m_next;
+    delete tmp;
+    --m_count;
+    return iterator(curr_pos->m_next);
 }
 
 /**
