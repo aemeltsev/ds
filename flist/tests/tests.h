@@ -244,7 +244,20 @@ TEST_F(FListCheckFixture, CheckPopFront)
     {
         ++i;
     }
-    //list.pop_front();
+    for(std::size_t i=0; i<num_of_elements/2; ++i)
+    {
+        flist->add(static_cast<int>(std::rand() % module));
+    }
+    //Assert
+    ASSERT_FALSE(flist->empty());
+    ASSERT_EQ(flist->size(), (num_of_elements/2));
+    for(std::size_t i=0; i<num_of_elements/2; ++i)
+    {
+        flist->pop_front();
+        get_new_time(sum_time, last_time);
+    }
+    ASSERT_TRUE(flist->empty());
+    ASSERT_LE(sum_time/num_of_elements, o1_time);
 }
 
 }
