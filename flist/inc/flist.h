@@ -190,8 +190,8 @@ template<class T>
 typename flist<T>::iterator flist<T>::erase_after(iterator& pos)
 {
     tnode* curr_pos = pos.ptr_node;
-
     tnode* tmp = curr_pos->m_next;
+
     curr_pos->m_next = tmp->m_next;
     delete tmp;
     --m_count;
@@ -211,7 +211,7 @@ void flist<T>::push_front(const T& data)
 
         result->m_next = m_head;
         m_head = result;
-        m_count++;
+        ++m_count;
     }
 }
 
@@ -221,8 +221,16 @@ void flist<T>::push_front(const T& data)
 template<class T>
 void flist<T>::pop_front()
 {
-    iterator tmp = begin();
-    erase(tmp);
+    if(m_count == 1){
+        m_head = nullptr;
+        m_tail = nullptr;
+    }
+    else{
+        tnode *temp_head = m_head;
+        m_head = m_head->m_next;
+        delete temp_head;
+    }
+    --m_count;
 }
 
 /**
@@ -243,6 +251,7 @@ void flist<T>::clear()
         --m_count;
     }
     m_head = nullptr;
+    m_tail = nullptr;
 }
 
 /**
