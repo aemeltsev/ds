@@ -9,8 +9,8 @@
 #include "flist.h"
 
 namespace flist_testing {
-const std::size_t num_of_elements = 100001;
-const int module = 1000000;
+const std::size_t num_of_elements = 100000;
+const int module = 10000;
 const double o1_time = 5 * 1e-06;
 
 /**
@@ -50,7 +50,7 @@ void fill(scl::flist<T> *flist)
 {
     for(std::size_t ind=0; ind<num_of_elements; ++ind)
     {
-        flist->add(static_cast<int>(std::rand() % module));
+        flist->add(static_cast<T>(std::rand() % module));
     }
 }
 
@@ -107,65 +107,145 @@ protected:
     }
 };
 
-/*template<class T>
-void print_list(std::ostream &out, const typename scl::flist<T>& list)
+TEST_F(FListCheckFixture, CheckAdd)
 {
-    typename scl::flist<T>::iterator it;
-    for(it = list.cbegin(); it!=list.cend(); it++)
+    //Arrange
+    //Act
+    for(std::size_t i=0; i<num_of_elements*2; )
     {
-        out << *it << " ";
+        ++i;
     }
-    out << std::endl;
+    fill(flist);
+    //Assert
+    ASSERT_FALSE(flist->empty());
+    ASSERT_EQ(flist->size(), num_of_elements);
 }
 
 
-    scl::flist<int> list;
-    list.add(1);
-    list.add(2);
-    list.add(3);
-    list.add(5);
-    print_list(std::cout, list);
-    for(int i=0; i<16; ++i)
+TEST_F(FListCheckFixture, CheckAddAndTime)
+{
+    //Arrange
+    //Act
+    for(std::size_t i=0; i<num_of_elements*2; )
     {
-        list.add(3 + static_cast<int>(std::rand()%3));
+        ++i;
     }
-    list.add(8);
-    print_list(std::cout, list);
-
-    //erase elements
-    scl::flist<int>::iterator f_iter = list.begin();
-    while(f_iter != list.end())
+    for(std::size_t i=0; i<num_of_elements; ++i)
     {
-        if(*f_iter == 3){
-            //https://stackoverflow.com/questions/596162(second answer)
-            f_iter= list.erase(f_iter);
+        flist->add(static_cast<int>(std::rand() % module));
+        get_new_time(sum_time, last_time);
+    }
+    //Assert
+    ASSERT_FALSE(flist->empty());
+    ASSERT_EQ(flist->size(), num_of_elements);
+    ASSERT_LE(sum_time/num_of_elements, o1_time);
+}
+
+TEST_F(FListCheckFixture, CheckInsertAfter)
+{
+    //Arrange
+    int odd=0;
+    //Act
+    for(std::size_t i=0; i<num_of_elements; )
+    {
+        ++i;
+    }
+    for(std::size_t i=0; i<num_of_elements/2; ++i)
+    {
+        if(i%2 == 0){
+            flist->add(1);
+            ++odd;
         }
         else{
-            f_iter++;
+            flist->add(static_cast<int>(std::rand() % module));
+        }
+
+    }
+    /* num_of_elements/2 = 50000
+     * odd = 25000
+     * (num_of_elements/2)+odd = 75000
+     */
+    for(auto s_iter = flist->begin(); s_iter != flist->end(); s_iter++)
+    {
+        if(*s_iter == 1){
+            s_iter = flist->insert_after(s_iter, 22);
+            get_new_time(sum_time, last_time);
         }
     }
-    print_list(stRUN_ALL_TESTS()d::cout, list);
+    //Assert
+    ASSERT_FALSE(flist->empty());
+    ASSERT_EQ(flist->size(), (num_of_elements/2)+odd+1);
+    ASSERT_LE(sum_time/num_of_elements, o1_time);
+}
 
-    //insert elements after node
-    scl::flist<int>::iterator s_iter = list.begin();
-    while(s_iter != list.end())
+TEST_F(FListCheckFixture, CheckErase)
+{
+    //Arrange
+    int odd=0;
+    //Act
+    for(std::size_t i=0; i<num_of_elements; )
     {
-        if(*s_iter == 4){
-            s_iter = list.insert_after(s_iter, 1);
+        ++i;
+    }
+    for(std::size_t i=0; i<num_of_elements; ++i)
+    {
+        if(i%2 == 0){
+            flist->add(1);
+            ++odd;
         }
         else{
-            s_iter++;
+            flist->add(static_cast<int>(std::rand() % module));
+        }
+
+    }
+    for(auto s_iter = flist->begin(); s_iter != flist->end(); s_iter++)
+    {
+        if(*s_iter == 1){
+            flist->erase_after(s_iter);
+            get_new_time(sum_time, last_time);
         }
     }
-    print_list(std::cout, list);
+    //Assert
+    ASSERT_FALSE(flist->empty());
+    ASSERT_EQ(flist->size(), (num_of_elements/2));
+    ASSERT_LE(sum_time/num_of_elements, o1_time);
+}
 
-    //push two elements before the head node and delete 1-st element from head
-    list.push_front(3);
-    list.push_front(3);
-    list.pop_front();
-    print_list(std::cout, list);
-    list.clear();
-*/
+TEST_F(FListCheckFixture, CheckPushFront)
+{
+    //Arrange
+    //Act
+    for(std::size_t i=0; i<num_of_elements; )
+    {
+        ++i;
+    }
+    for(std::size_t i=0; i<num_of_elements/2; ++i)
+    {
+        flist->add(static_cast<int>(std::rand() % module));
+    }
+    //Assert
+    ASSERT_FALSE(flist->empty());
+    ASSERT_EQ(flist->size(), (num_of_elements/2));
+    for(std::size_t i=0; i<num_of_elements/2; ++i)
+    {
+        flist->push_front(std::rand() % module);
+        get_new_time(sum_time, last_time);
+    }
+    //Assert
+    ASSERT_EQ(flist->size(), num_of_elements);
+    ASSERT_LE(sum_time/num_of_elements, o1_time);
+}
+
+TEST_F(FListCheckFixture, CheckPopFront)
+{
+    //Arrange
+    //Act
+    for(std::size_t i=0; i<num_of_elements; )
+    {
+        ++i;
+    }
+    //list.pop_front();
+}
 
 }
 
