@@ -318,6 +318,7 @@ inline bool flist<T>::empty() const noexcept
     return m_head == NULL;
 }
 
+//TODO - edit method using std::advance, or self implementation
 template<class T>
 inline T flist<T>::get_value(tnode *node)
 {
@@ -325,6 +326,7 @@ inline T flist<T>::get_value(tnode *node)
     return node->m_val;
 }
 
+//TODO - edit method using std::advance, or self implementation
 template<class T>
 inline void flist<T>::set_value(tnode *node, const T &val)
 {
