@@ -165,6 +165,11 @@ typename  deque_iterator<T>::iterator& deque_iterator<T>::operator--(int junk)
 template<class T>
 class deque{
 
+    void copy(std::size_t new_size);
+    void check_realloc();
+    void add_length();
+    void sub_length();
+
 public:
     friend class deque_iterator<T>;
     using value_type = T;
