@@ -36,7 +36,7 @@ template<class T> class deque;
 
 template<class T>
 class deque_iterator{
-
+    friend class deque<T>;
     const deque<T>* m_deq_ptr;
     std::size_t m_indx_base;
     bool get_local(std::size_t val)
@@ -171,8 +171,8 @@ class deque{
     void sub_length();
 
 public:
-    friend class deque_iterator<T>;
-    using value_type = T;
+    //friend class deque_iterator<T>;
+    //using value_type = T;
     using iterator = deque_iterator<T>;
 
     std::size_t buffer_size(){return s_buff_size(sizeof(T));}
@@ -196,9 +196,9 @@ public:
     void pop_back();
     void clear();
     T& front();
-    const T& front() const;
+    const T& cfront() const;
     T& back();
-    const T& back() const;
+    const T& cback() const;
 
     iterator begin();
     iterator end();
@@ -211,6 +211,53 @@ private:
     std::size_t m_begin;
     std::size_t m_end;
 };
+
+template<class T>
+void deque<T>::copy(std::size_t new_size)
+{
+    std::size_t prev_size = size();
+    T* new_m_buffer = new (std::nothrow) T[new_size];
+    if(new_m_buffer != NULL){
+        for(std::size_t i = 0, p = m_begin; i < size(), p != m_end; p = (p+1) % m_size)
+        {
+            new_m_buffer[i] = m_buffer[p];
+        }
+        delete[] m_buffer;
+        m_buffer = new_m_buffer;
+        m_begin = 0;
+        m_end = (new_size == m_size*2) ? (m_size-1) : prev_size;
+    }
+    else{
+        assert(m_buffer && "Deque error: unable to allocate memory");
+    }
+}
+
+template<class T>
+void deque<T>::check_realloc()
+{
+    if(size() == m_size - 1)
+    {
+        add_length();
+    }
+    if((size()*4 == m_size) && m_size > 4)
+    {
+        sub_length();
+    }
+}
+
+template<class T>
+void deque<T>::add_length()
+{
+    copy(m_size*2);
+    m_size *= 2;
+}
+
+template<class T>
+void deque<T>::sub_length()
+{
+    copy(m_size/2);
+    m_size /= 2;
+}
 
 /**
  * @brief The equality operator overloaded
@@ -251,19 +298,17 @@ bool operator!=(const deque<T>& x, const deque<T> y)
 template<class T>
 deque<T>::deque()
     :m_buffer(nullptr)
-    ,m_size(0)
+    ,m_size(2)
     ,m_begin(0)
     ,m_end(0)
 {
 
     m_buffer = new (std::nothrow) T[buffer_size()];
-    if(m_buffer != NULL)
-    {
+    if(m_buffer != NULL){
         m_size = buffer_size();
     }
-    else
-    {
-        assert(m_buffer && "Deque error: unable to allocate memory in default constructor");
+    else{
+        assert(m_buffer && "Deque error: unable to allocate memory");
     }
 }
 
@@ -287,16 +332,13 @@ deque<T>::deque(const deque<T>& other)
     ,m_end(other.m_end)
 {
     m_buffer = new (std::nothrow) T[buffer_size()];
-    if(m_buffer != NULL)
-    {
-        for(std::size_t i=0; i<m_size; ++i)
-        {
+    if(m_buffer != NULL){
+        for(std::size_t i=0; i<m_size; ++i){
             m_buffer[i] = other.m_buffer[i];
         }
     }
-    else
-    {
-        assert(m_buffer && "Deque error: unable to allocate memory in default constructor");
+    else{
+        assert(m_buffer && "Deque error: unable to allocate memory");
     }
 }
 
@@ -306,25 +348,21 @@ deque<T>::deque(const deque<T>& other)
 template<class T>
 deque<T>& deque<T>::operator=(const deque<T>& other)
 {
-    if(this != other)
-    {
+    if(this != other){
         T* new_buffer = new (std::nothrow) T[other.m_size];
-        if(m_buffer != NULL)
-        {
+        if(m_buffer != NULL){
             delete [] m_buffer;
             m_buffer = new_buffer;
             m_size = other.m_size;
             m_begin = other.m_begin;
             m_end = other.m_end;
 
-            for(std::size_t i=0; i<m_size; ++i)
-            {
+            for(std::size_t i=0; i<m_size; ++i){
                 m_buffer[i] = other.m_buffer[i];
             }
         }
-        else
-        {
-            assert(m_buffer && "Deque error: unable to allocate memory in default constructor");
+        else{
+            assert(m_buffer && "Deque error: unable to allocate memory");
         }
     }
     return *this;
@@ -359,25 +397,34 @@ std::size_t deque<T>::size() const noexcept
 template<class T>
 void deque<T>::push_front(const T& val)
 {
-    //TODO
+    check_realloc();
+    m_begin = (m_begin - 1 + m_size) % m_size;
+    m_buffer[m_begin] = val;
 }
 
 template<class T>
 void deque<T>::pop_front()
 {
-    //TODO
+    assert((size() == 0) && "Deque error: pop_front() empty deque");
+    check_realloc();
+    m_begin = (m_begin + 1) % m_size;
 }
+
 
 template<class T>
 void deque<T>::push_back(const T& val)
 {
-    //TODO
+    check_realloc();
+    m_buffer[m_end] = val;
+    m_end = (m_end + 1) % m_size;
 }
 
 template<class T>
 void deque<T>::pop_back()
 {
-    //TODO
+    assert((size() == 0) && "Deque error: pop_back() empty deque");
+    check_realloc();
+    m_end = (m_end - 1 + m_size) % m_size;
 }
 
 template<class T>
@@ -389,49 +436,83 @@ void deque<T>::clear()
 template<class T>
 T& deque<T>::front()
 {
-    //TODO
+    assert((m_begin == m_end) && "Deque error: front() called on empty deque");
+    if (size() == 0){
+        exit (EXIT_FAILURE);
+    }
+    return m_buffer[m_begin];
 }
 
 template<class T>
-const T& deque<T>::front() const
+const T& deque<T>::cfront() const
 {
-    //TODO
+    assert((m_begin == m_end) && "Deque error: cfront() called on empty deque");
+    if (size() == 0){
+        exit (EXIT_FAILURE);
+    }
+    return m_buffer[m_begin];
 }
 
 template<class T>
 T& deque<T>::back()
 {
-    //TODO
+    assert((m_begin == m_end) && "Deque error: back() called on empty deque");
+    if (size() == 0){
+        exit (EXIT_FAILURE);
+    }
+    if (m_end == 0){
+        return m_buffer[m_size - 1];
+    }
+    return m_buffer[m_end - 1];
 }
 
 template<class T>
-const T& deque<T>::back() const
+const T& deque<T>::cback() const
 {
-    //TODO
+    assert((m_begin == m_end) && "Deque error: back() called on empty deque");
+    if (size() == 0){
+        exit (EXIT_FAILURE);
+    }
+    if (m_end == 0){
+        return m_buffer[m_size - 1];
+    }
+    return m_buffer[m_end - 1];
 }
 
 template<class T>
 typename deque<T>::iterator deque<T>::begin()
 {
-    //TODO
+    iterator it;
+    it.m_deq_ptr = this;
+    it.m_indx_base = 0;
+    return it;
 }
 
 template<class T>
 typename deque<T>::iterator deque<T>::end()
 {
-    //TODO
+    iterator it;
+    it.m_deq_ptr = this;
+    it.m_indx_base = size();
+    return it;
 }
 
 template<class T>
 typename deque<T>::iterator deque<T>::rbegin()
 {
-    //TODO
+    iterator it;
+    it.m_deq_ptr = this;
+    it.m_indx_base = size()-1;
+    return it;
 }
 
 template<class T>
 typename deque<T>::iterator deque<T>::rend()
 {
-    //TODO
+    iterator it;
+    it.m_deq_ptr = this;
+    it.m_indx_base = 0 - 1;
+    return it;
 }
 
 }
