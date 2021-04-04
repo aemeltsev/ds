@@ -2,14 +2,15 @@
 #define DEQUE_H
 #include <cstdint>
 #include <string>
-#include <new>
+//#include <new>
 //#include <cstddef>
 #include <cassert>
 
+// see https://www.cs.fsu.edu/~lacher/courses/COP5517/lectures/deques/script.html
 /**
  * @brief DEFAULT_BUFFER_SIZE
  */
-constexpr std::size_t DEFAULT_BUFFER_SIZE = 512U;
+constexpr std::size_t DEFAULT_BUFFER_SIZE = 256U;
 
 // Sequence containers library)
 namespace scl {
@@ -298,7 +299,6 @@ bool operator!=(const deque<T>& x, const deque<T> y)
 template<class T>
 deque<T>::deque()
     :m_buffer(nullptr)
-    ,m_size(2)
     ,m_begin(0)
     ,m_end(0)
 {
@@ -430,7 +430,9 @@ void deque<T>::pop_back()
 template<class T>
 void deque<T>::clear()
 {
-    //TODO
+    m_size = 0;
+    m_begin = 0;
+    m_end = 0;
 }
 
 template<class T>
